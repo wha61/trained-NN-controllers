@@ -35,3 +35,7 @@ This repository aims to develop and test custom neural network controllers for t
 
 #### Output Parameters
 - **Action (4)**: `pwm for each motor (pwm = 30000 + np.clip(action, -1, +1) * 30000)`
+
+#### Reference
+
+[How our neural network works](https://github.com/Hu-Hanyang/safe-control-gym/blob/main/WorkingLogs.md)
