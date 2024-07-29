@@ -86,25 +86,19 @@ void controllerNN(control_t *control,
 	state_array[4] = state->attitudeQuaternion.y;
 	state_array[5] = state->attitudeQuaternion.z;
 	state_array[6] = state->attitudeQuaternion.w;
-	state_array[7] = state->velocity.x / MAX_LIN_VEL_XY;
-	state_array[8] = state->velocity.y / MAX_LIN_VEL_XY;
-	state_array[9] = state->velocity.z / MAX_LIN_VEL_Z;
-	state_array[10] = omega_roll;
-	state_array[11] = omega_pitch;
-	state_array[12] = omega_yaw;
-	//state_array[7] = state->attitude.roll / 180.0f;
-	//state_array[8] = state->attitude.pitch /  180.0f;
-	//state_array[9] = state->attitude.yaw /  180.0f;
-	//state_array[10] = state->velocity.x / MAX_LIN_VEL_XY;
-	//state_array[11] = state->velocity.y / MAX_LIN_VEL_XY;
-	//state_array[12] = state->velocity.z / MAX_LIN_VEL_Z;
-	//state_array[13] = omega_roll;
-	//state_array[14] = omega_pitch;
-	//state_array[15] = omega_yaw;
-	//state_array[16] = (float)motorsGetRatio(MOTOR_M1) / UINT16_MAX;
-	//state_array[17] = (float)motorsGetRatio(MOTOR_M2) / UINT16_MAX;
-	//state_array[18] = (float)motorsGetRatio(MOTOR_M3) / UINT16_MAX;
-	//state_array[19] = (float)motorsGetRatio(MOTOR_M4) / UINT16_MAX;
+	state_array[7] = state->attitude.roll / 180.0f;
+	state_array[8] = state->attitude.pitch /  180.0f;
+	state_array[9] = state->attitude.yaw /  180.0f;
+	state_array[10] = state->velocity.x / MAX_LIN_VEL_XY;
+	state_array[11] = state->velocity.y / MAX_LIN_VEL_XY;
+	state_array[12] = state->velocity.z / MAX_LIN_VEL_Z;
+	state_array[13] = omega_roll;
+	state_array[14] = omega_pitch;
+	state_array[15] = omega_yaw;
+	state_array[16] = (float)motorsGetRatio(MOTOR_M1) / UINT16_MAX;
+	state_array[17] = (float)motorsGetRatio(MOTOR_M2) / UINT16_MAX;
+	state_array[18] = (float)motorsGetRatio(MOTOR_M3) / UINT16_MAX;
+	state_array[19] = (float)motorsGetRatio(MOTOR_M4) / UINT16_MAX;
 
 
 	// if (relVel) {
