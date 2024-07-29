@@ -31,7 +31,7 @@ static uint16_t freq = 240;
 // static control_t_n control_n;
 static control_t last_step_control_t;
 static struct mat33 rot;
-static float state_array[20];
+static float state_array[17];
 // static float state_array[22];
 
 static uint32_t usec_eval;
@@ -92,6 +92,10 @@ void controllerNN(control_t *control,
 	state_array[10] = omega_roll;
 	state_array[11] = omega_pitch;
 	state_array[12] = omega_yaw;
+	state_array[13] = (float)motorsGetRatio(MOTOR_M1) / UINT16_MAX;
+	state_array[14] = (float)motorsGetRatio(MOTOR_M2) / UINT16_MAX;
+	state_array[15] = (float)motorsGetRatio(MOTOR_M3) / UINT16_MAX;
+	state_array[16] = (float)motorsGetRatio(MOTOR_M4) / UINT16_MAX;
 	//state_array[7] = state->attitude.roll / 180.0f;
 	//state_array[8] = state->attitude.pitch /  180.0f;
 	//state_array[9] = state->attitude.yaw /  180.0f;
