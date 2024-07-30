@@ -92,10 +92,10 @@ void controllerNN(control_t *control,
 	state_array[10] = omega_roll;
 	state_array[11] = omega_pitch;
 	state_array[12] = omega_yaw;
-	state_array[13] = control->nn_output[0]
-	state_array[14] = control->nn_output[1]
-	state_array[15] = control->nn_output[2]
-	state_array[16] = control->nn_output[3]
+	state_array[13] = control->nn_output[0];
+	state_array[14] = control->nn_output[1];
+	state_array[15] = control->nn_output[2];
+	state_array[16] = control->nn_output[3];
 	//state_array[7] = state->attitude.roll / 180.0f;
 	//state_array[8] = state->attitude.pitch /  180.0f;
 	//state_array[9] = state->attitude.yaw /  180.0f;
