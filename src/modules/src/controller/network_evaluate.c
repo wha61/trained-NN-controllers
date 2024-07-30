@@ -234,12 +234,24 @@ static const float layer_2_bias[4] = {0.0986838, 0.12224753, -0.058344297, -0.00
 		// control->normalizedForces[1] = clip(scale(output_2[1]), 0.0, 1.0);
 		// control->normalizedForces[2] = clip(scale(output_2[2]), 0.0, 1.0);
 		// control->normalizedForces[3] = clip(scale(output_2[3]), 0.0, 1.0);
-        float f1 = output_2[0] - 0.5f * output_2[1] + 0.5f * output_2[2] + output_2[3];
-	    float f2 = output_2[0] - 0.5f * output_2[1] - 0.5f * output_2[2] - output_2[3];
-	    float f3 = output_2[0] + 0.5f * output_2[1] - 0.5f * output_2[2] + output_2[3];
-	    float f4 = output_2[0] + 0.5f * output_2[1] + 0.5f * output_2[2] - output_2[3];
+        // float f1 = output_2[0] - 0.5f * output_2[1] + 0.5f * output_2[2] + output_2[3];
+	    // float f2 = output_2[0] - 0.5f * output_2[1] - 0.5f * output_2[2] - output_2[3];
+	    // float f3 = output_2[0] + 0.5f * output_2[1] - 0.5f * output_2[2] + output_2[3];
+	    // float f4 = output_2[0] + 0.5f * output_2[1] + 0.5f * output_2[2] - output_2[3];
+
+        control->nn_output[0] = output_2[0];
+        control->nn_output[1] = output_2[1];
+        control->nn_output[2] = output_2[2];
+        control->nn_output[3] = output_2[3];
+
+        control->normalizedForces[0] = 30000 + clip(output_2[0], -1, +1) * 30000;
+		control->normalizedForces[1] = 30000 + clip(output_2[1], -1, +1) * 30000;
+		control->normalizedForces[2] = 30000 + clip(output_2[2], -1, +1) * 30000;
+		control->normalizedForces[3] = 30000 + clip(output_2[3], -1, +1) * 30000;
     
 	}
+
+
 
     PARAM_GROUP_START(nnForward)
     PARAM_ADD(PARAM_FLOAT, hover_ratio, &hover_ratio)

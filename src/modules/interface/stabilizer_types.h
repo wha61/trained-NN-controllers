@@ -214,8 +214,10 @@ typedef struct control_s {
       };
     };
 
+    float nn_output[4];
     // controlModeForce
     float normalizedForces[STABILIZER_NR_OF_MOTORS]; // 0.0 ... 1.0
+    
   };
 
   control_mode_t controlMode;
