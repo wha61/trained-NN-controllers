@@ -3,6 +3,9 @@
 #### Project Overview
 This repository aims to develop and test custom neural network controllers for the Crazyflie 2.1 drone, using Hamilton-Jacobi Reachability Analysis combined with reinforcement learning methods. The goal is to enhance the robustness of the trained algorithms and validate their performance in real-world flight tests.
 
+ ***Please use command "git submodule update --init --recursive" to download all dependence***
+
+
 #### To Do List
 1. **Develop Custom Neural Network Controller in C**:
     - Accept 17 input parameters: 
