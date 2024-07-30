@@ -1,5 +1,10 @@
 #include "stabilizer_types.h"
 #include "network_evaluate.h"
+#include "log.h"
+#include "param.h"
+
+static float hover_ratio = 0.5667f;
+static float ctrl_range = 0.2f;
 
 float linear(float num) {
 	return num;
@@ -14,6 +19,15 @@ float relu(float num) {
 		return num;
 	} else {
 		return 0;
+	}
+}
+
+
+float elu(float num) {
+	if (num > 0) {
+		return num;
+	} else {
+		return exp(num) - 1;
 	}
 }
 
@@ -189,36 +203,55 @@ static const float layer_2_bias[4] = {0.0986838, 0.12224753, -0.058344297, -0.00
 
 	void networkEvaluate(control_t *control, const float *state_array) {
 	
-		for (int i = 0; i < structure[0][1]; i++) {
-			output_0[i] = 0;
-			for (int j = 0; j < structure[0][0]; j++) {
-				output_0[i] += state_array[j] * layer_0_weight[j][i];
-			}
-			output_0[i] += layer_0_bias[i];
-			output_0[i] = tanhf(output_0[i]);
-		}
-	
-		for (int i = 0; i < structure[1][1]; i++) {
-			output_1[i] = 0;
-			for (int j = 0; j < structure[1][0]; j++) {
-				output_1[i] += output_0[j] * layer_1_weight[j][i];
-			}
-			output_1[i] += layer_1_bias[i];
-			output_1[i] = tanhf(output_1[i]);
-		}
+	    for (int i = 0; i < structure[0][0]; i++) {
+	    	output_0[i] = 0;
+	    	for (int j = 0; j < structure[0][1]; j++) {
+	    		output_0[i] += state_array[j] * layer_0_weight[i][j];
+	    	}
+	    	output_0[i] += layer_0_bias[i];
+	    	output_0[i] = elu(output_0[i]);
+	    }
+    
+	    for (int i = 0; i < structure[1][0]; i++) {
+	    	output_1[i] = 0;
+	    	for (int j = 0; j < structure[1][1]; j++) {
+	    		output_1[i] += output_0[j] * layer_1_weight[i][j];
+	    	}
+	    	output_1[i] += layer_1_bias[i];
+	    	output_1[i] = elu(output_1[i]);
+	    }
+    
+	    for (int i = 0; i < structure[2][0]; i++) {
+	    	output_2[i] = 0;
+	    	for (int j = 0; j < structure[2][1]; j++) {
+	    		output_2[i] += output_1[j] * layer_2_weight[i][j];
+	    	}
+	    	output_2[i] += layer_2_bias[i];
+	    	output_2[i] = tanhf(output_2[i]);
+	    }
 		
-		for (int i = 0; i < structure[2][1]; i++) {
-			output_2[i] = 0;
-			for (int j = 0; j < structure[2][0]; j++) {
-				output_2[i] += output_1[j] * layer_2_weight[j][i];
-			}
-			output_2[i] += layer_2_bias[i];
-		}
-		
-		control->normalizedForces[0] = clip(scale(output_2[0]), 0.0, 1.0);
-		control->normalizedForces[1] = clip(scale(output_2[1]), 0.0, 1.0);
-		control->normalizedForces[2] = clip(scale(output_2[2]), 0.0, 1.0);
-		control->normalizedForces[3] = clip(scale(output_2[3]), 0.0, 1.0);
-	
+		// control->normalizedForces[0] = clip(scale(output_2[0]), 0.0, 1.0);
+		// control->normalizedForces[1] = clip(scale(output_2[1]), 0.0, 1.0);
+		// control->normalizedForces[2] = clip(scale(output_2[2]), 0.0, 1.0);
+		// control->normalizedForces[3] = clip(scale(output_2[3]), 0.0, 1.0);
+        float f1 = output_2[0] - 0.5f * output_2[1] + 0.5f * output_2[2] + output_2[3];
+	    float f2 = output_2[0] - 0.5f * output_2[1] - 0.5f * output_2[2] - output_2[3];
+	    float f3 = output_2[0] + 0.5f * output_2[1] - 0.5f * output_2[2] + output_2[3];
+	    float f4 = output_2[0] + 0.5f * output_2[1] + 0.5f * output_2[2] - output_2[3];
+    
 	}
+
+    PARAM_GROUP_START(nnForward)
+    PARAM_ADD(PARAM_FLOAT, hover_ratio, &hover_ratio)
+    PARAM_ADD(PARAM_FLOAT, ctrl_range, &ctrl_range)
+    PARAM_GROUP_STOP(nnForward)
+
+
+    LOG_GROUP_START(ctrlNN)
+
+    LOG_ADD(LOG_FLOAT, output1, &output_2[0])
+    LOG_ADD(LOG_FLOAT, output2, &output_2[1])
+    LOG_ADD(LOG_FLOAT, output3, &output_2[2])
+    LOG_ADD(LOG_FLOAT, output4, &output_2[3])
+    LOG_GROUP_STOP(ctrlNN)
 	
