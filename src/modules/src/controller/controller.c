@@ -8,6 +8,7 @@
 #include "controller_indi.h"
 #include "controller_brescianini.h"
 #include "controller_nn.h"
+#include "controller_HJPPO2024.h"
 #include "autoconf.h"
 
 #define DEFAULT_CONTROLLER ControllerTypePID
@@ -29,6 +30,7 @@ static ControllerFcns controllerFunctions[] = {
   {.init = controllerINDIInit, .test = controllerINDITest, .update = controllerINDI, .name = "INDI"},
   {.init = controllerBrescianiniInit, .test = controllerBrescianiniTest, .update = controllerBrescianini, .name = "Brescianini"},
   {.init = controllerNNInit, .test = controllerNNTest, .update = controllerNN, .name="NN"}
+  {.init = controllerHJPPO2024Init, .test = controllerHJPPO2024Test, .update = controllerHJPPO2024, .name="HJPPO2024"}
   #ifdef CONFIG_CONTROLLER_OOT
   {.init = controllerOutOfTreeInit, .test = controllerOutOfTreeTest, .update = controllerOutOfTree, .name = "OutOfTree"},
   #endif
@@ -56,6 +58,8 @@ void controllerInit(ControllerType controller) {
     #define CONTROLLER ControllerTypeBrescianini
   #elif defined(CONFIG_CONTROLLER_NN)
     #define CONTROLLER ControllerTypeNN
+  #elif defined(CONFIG_CONTROLLER_HJPPO2024)
+    #define CONTROLLER ControllerTypeHJPPO2024
   #else
     #define CONTROLLER ControllerTypeAutoSelect
   #endif
