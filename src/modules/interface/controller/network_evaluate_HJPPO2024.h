@@ -8,6 +8,6 @@
  * since the network outputs thrust on each motor,
  * we need to define a struct which stores the values
 */
-void networkEvaluate(control_t *control, const float *state_array);
+void networkEvaluateHJPPO2024(control_t *control, const float *state_array);
 
 #endif
