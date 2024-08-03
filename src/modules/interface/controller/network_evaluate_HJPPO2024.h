@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "stabilizer_types.h"
+#include "network_evaluate.h"
 
 /*
  * since the network outputs thrust on each motor,
