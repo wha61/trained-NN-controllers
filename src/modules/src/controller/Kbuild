@@ -8,3 +8,5 @@ obj-y += position_controller_indi.o
 obj-y += position_controller_pid.o
 obj-y += controller_nn.o
 obj-y += network_evaluate.o
+obj-y += controller_HJPPO2024.o
+obj-y += network_evaluate_HJPPO2024.o
