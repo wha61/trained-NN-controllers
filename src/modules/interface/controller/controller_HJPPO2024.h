@@ -3,6 +3,7 @@
 
 #include "stabilizer_types.h"
 #include "network_evaluate_HJPPO2024.h"
+#include "network_evaluate.h"
 
 void controllerHJPPO2024Init(void);
 bool controllerHJPPO2024Test(void);

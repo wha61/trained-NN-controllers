@@ -1,4 +1,5 @@
 #include "stabilizer_types.h"
+#include "network_evaluate.h"
 #include "network_evaluate_HJPPO2024.h"
 #include "log.h"
 #include "param.h"
@@ -6,41 +7,41 @@
 static float hover_ratio = 0.5667f;
 static float ctrl_range = 0.2f;
 
-float linearHJPPO2024(float num) {
-	return num;
-}
+// float linear(float num) {
+// 	return num;
+// }
 
-float sigmoidHJPPO2024(float num) {
-	return 1 / (1 + exp(-num));
-}
+// float sigmoid(float num) {
+// 	return 1 / (1 + exp(-num));
+// }
 
-float reluHJPPO2024(float num) {
-	if (num > 0) {
-		return num;
-	} else {
-		return 0;
-	}
-}
+// float relu(float num) {
+// 	if (num > 0) {
+// 		return num;
+// 	} else {
+// 		return 0;
+// 	}
+// }
 
 
-float eluHJPPO2024(float num) {
-	if (num > 0) {
-		return num;
-	} else {
-		return exp(num) - 1;
-	}
-}
+// float elu(float num) {
+// 	if (num > 0) {
+// 		return num;
+// 	} else {
+// 		return exp(num) - 1;
+// 	}
+// }
 
-// range of action -1 ... 1, need to scale to range 0 .. 1
-float scaleHJPPO2024(float v) {
-	return 0.5f * (v + 1);
-}
+// // range of action -1 ... 1, need to scale to range 0 .. 1
+// float scale(float v) {
+// 	return 0.5f * (v + 1);
+// }
 
-float clipHJPPO2024(float v, float min, float max) {
-	if (v < min) return min;
-	if (v > max) return max;
-	return v;
-}
+// float clip(float v, float min, float max) {
+// 	if (v < min) return min;
+// 	if (v > max) return max;
+// 	return v;
+// }
 
 static const int structure[3][2] = {{17, 64},{64, 64},{64, 4}};
 static float output_0[64];
@@ -243,10 +244,10 @@ static const float layer_2_bias[4] = {0.0986838, 0.12224753, -0.058344297, -0.00
         control->nn_output[2] = output_2[2];
         control->nn_output[3] = output_2[3];
 
-        control->normalizedForces[0] = 30000 + clipHJPPO2024(output_2[0], -1, +1) * 30000;
-		control->normalizedForces[1] = 30000 + clipHJPPO2024(output_2[1], -1, +1) * 30000;
-		control->normalizedForces[2] = 30000 + clipHJPPO2024(output_2[2], -1, +1) * 30000;
-		control->normalizedForces[3] = 30000 + clipHJPPO2024(output_2[3], -1, +1) * 30000;
+        control->normalizedForces[0] = 30000 + clip(output_2[0], -1, +1) * 30000;
+		control->normalizedForces[1] = 30000 + clip(output_2[1], -1, +1) * 30000;
+		control->normalizedForces[2] = 30000 + clip(output_2[2], -1, +1) * 30000;
+		control->normalizedForces[3] = 30000 + clip(output_2[3], -1, +1) * 30000;
     
 	}
 
