@@ -148,7 +148,7 @@ void controllerHJPPO2024(control_t *control,
 
 	// run the neural neural network
 	uint64_t start = usecTimestamp();
-	networkEvaluate(control, state_array);
+	networkEvaluateHJPPO2024(control, state_array);
 	usec_eval = (uint32_t) (usecTimestamp() - start);
 
 	if (setpoint->mode.z == modeDisable) {
