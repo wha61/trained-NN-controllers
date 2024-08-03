@@ -25,7 +25,7 @@ def recursive_convert(name, param, c_arrays):
             recursive_convert(f"{name}.{sub_name}", sub_param, c_arrays)
 
 # 加载模型的状态字典
-model_state_dict = torch.load('model_latest.pt', map_location=torch.device('cpu'))
+model_state_dict = torch.load('model_rarl.pt', map_location=torch.device('cpu'))
 
 # 将每个参数转换为 C 数组
 c_arrays = []
@@ -33,7 +33,7 @@ for name, param in model_state_dict.items():
     recursive_convert(name, param, c_arrays)
 
 # 将所有 C 数组写入文件
-with open('model_parameters.c', 'w') as f:
+with open('model_parameters_rarl.c', 'w') as f:
     for c_array in c_arrays:
         if c_array:  # 仅在 c_array 非空时写入文件
             f.write(c_array + '\n')

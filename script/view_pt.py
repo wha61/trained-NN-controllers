@@ -22,7 +22,7 @@ def view_pt_file(file_path):
         recursive_print(name, param)
 
 # 替换为您的 .pt 文件路径
-file_path = 'model_test.pt'
+file_path = 'model_rarl.pt'
 
 # 查看 .pt 文件内容
 view_pt_file(file_path)
