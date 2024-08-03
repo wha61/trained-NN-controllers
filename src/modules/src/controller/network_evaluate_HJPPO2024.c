@@ -6,41 +6,41 @@
 static float hover_ratio = 0.5667f;
 static float ctrl_range = 0.2f;
 
-float linear(float num) {
-	return num;
-}
+// float linear(float num) {
+// 	return num;
+// }
 
-float sigmoid(float num) {
-	return 1 / (1 + exp(-num));
-}
+// float sigmoid(float num) {
+// 	return 1 / (1 + exp(-num));
+// }
 
-float relu(float num) {
-	if (num > 0) {
-		return num;
-	} else {
-		return 0;
-	}
-}
+// float relu(float num) {
+// 	if (num > 0) {
+// 		return num;
+// 	} else {
+// 		return 0;
+// 	}
+// }
 
 
-float elu(float num) {
-	if (num > 0) {
-		return num;
-	} else {
-		return exp(num) - 1;
-	}
-}
+// float elu(float num) {
+// 	if (num > 0) {
+// 		return num;
+// 	} else {
+// 		return exp(num) - 1;
+// 	}
+// }
 
-// range of action -1 ... 1, need to scale to range 0 .. 1
-float scale(float v) {
-	return 0.5f * (v + 1);
-}
+// // range of action -1 ... 1, need to scale to range 0 .. 1
+// float scale(float v) {
+// 	return 0.5f * (v + 1);
+// }
 
-float clip(float v, float min, float max) {
-	if (v < min) return min;
-	if (v > max) return max;
-	return v;
-}
+// float clip(float v, float min, float max) {
+// 	if (v < min) return min;
+// 	if (v > max) return max;
+// 	return v;
+// }
 
 static const int structure[3][2] = {{17, 64},{64, 64},{64, 4}};
 static float output_0[64];
