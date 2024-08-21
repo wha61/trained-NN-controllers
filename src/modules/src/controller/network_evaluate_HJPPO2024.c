@@ -243,11 +243,16 @@ static const float layer_2_bias[4] = {0.0986838, 0.12224753, -0.058344297, -0.00
 	        control->nn_output[2] = output_2[2];
 	        control->nn_output[3] = output_2[3];
 	
-	        control->normalizedForces[0] = 30000 + clipHJPPO2024(output_2[0], -1, +1) * 30000;
-		control->normalizedForces[1] = 30000 + clipHJPPO2024(output_2[1], -1, +1) * 30000;
-		control->normalizedForces[2] = 30000 + clipHJPPO2024(output_2[2], -1, +1) * 30000;
-		control->normalizedForces[3] = 30000 + clipHJPPO2024(output_2[3], -1, +1) * 30000;
-    
+	 //        control->normalizedForces[0] = 30000 + clipHJPPO2024(output_2[0], -1, +1) * 30000;
+		// control->normalizedForces[1] = 30000 + clipHJPPO2024(output_2[1], -1, +1) * 30000;
+		// control->normalizedForces[2] = 30000 + clipHJPPO2024(output_2[2], -1, +1) * 30000;
+		// control->normalizedForces[3] = 30000 + clipHJPPO2024(output_2[3], -1, +1) * 30000;
+
+		// change to float
+    		control->normalizedForces[0] = 30000.0f + clipHJPPO2024(output_2[0], -1.0f, 1.0f) * 30000.0f;
+    		control->normalizedForces[1] = 30000.0f + clipHJPPO2024(output_2[1], -1.0f, 1.0f) * 30000.0f;
+    		control->normalizedForces[2] = 30000.0f + clipHJPPO2024(output_2[2], -1.0f, 1.0f) * 30000.0f;
+    		control->normalizedForces[3] = 30000.0f + clipHJPPO2024(output_2[3], -1.0f, 1.0f) * 30000.0f;
 	}
 
     // void networkEvaluate(control_t *control, const float *state_array) {
