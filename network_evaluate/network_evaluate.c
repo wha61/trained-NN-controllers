@@ -1,24 +1,20 @@
 #include "stabilizer_types.h"
-#include "network_evaluate_HJPPO2024.h"
+#include "network_evaluate.h"
 #include "log.h"
 #include "param.h"
 
 static float hover_ratio = 0.5667f;
 static float ctrl_range = 0.2f;
-static float gravity_acc = 9.8f;
-static float mass = 0.027f;
-static float gravity = 0.2646f
-static float max_thrust = 0.1488375f;
 
-float linearHJPPO2024(float num) {
+float linear(float num) {
 	return num;
 }
 
-float sigmoidHJPPO2024(float num) {
+float sigmoid(float num) {
 	return 1 / (1 + exp(-num));
 }
 
-float reluHJPPO2024(float num) {
+float relu(float num) {
 	if (num > 0) {
 		return num;
 	} else {
@@ -27,7 +23,7 @@ float reluHJPPO2024(float num) {
 }
 
 
-float eluHJPPO2024(float num) {
+float elu(float num) {
 	if (num > 0) {
 		return num;
 	} else {
@@ -36,11 +32,11 @@ float eluHJPPO2024(float num) {
 }
 
 // range of action -1 ... 1, need to scale to range 0 .. 1
-float scaleHJPPO2024(float v) {
+float scale(float v) {
 	return 0.5f * (v + 1);
 }
 
-float clipHJPPO2024(float v, float min, float max) {
+float clip(float v, float min, float max) {
 	if (v < min) return min;
 	if (v > max) return max;
 	return v;
@@ -205,53 +201,57 @@ static const float layer_0_bias[64] = {-0.27187562, -0.1155392, 0.009609158, -0.
 static const float layer_1_bias[64] = {-0.039920118, -0.34357175, -0.038049687, -0.055154964, 0.022942754, 0.06969302, 0.0010297163, 0.012833814, 0.068036996, 0.0024356397, 0.08770977, 0.023476966, 0.3774756, -0.04187786, -0.0046450673, 0.00010734818, -0.10340766, -0.040481303, 0.05625166, -0.2614243, 0.07776197, -0.059576232, -0.5136092, 0.21255119, 0.20715678, 0.19852762, 0.045319222, 0.19651397, 0.019200472, -0.2966994, -0.5734187, -0.009972472, 0.22714935, -0.108172044, 0.015090575, 0.036743563, -0.049282517, 0.43211943, -0.18792942, 0.1996835, 0.0041534216, 0.009098021, -0.013844698, -0.03690544, 0.13096856, 0.16554603, 0.019743558, -0.001170623, 0.011515146, -0.07842869, -0.052631788, 0.4202266, 0.06373813, 0.22894388, 0.060838, -0.0067343847, 0.0056981784, 0.09132661, -0.3108889, 0.09907937, -0.06487999, -0.015847137, 0.0053147627, -0.0069496674};
 static const float layer_2_bias[4] = {0.0986838, 0.12224753, -0.058344297, -0.0035164247};
 
-	void networkEvaluateHJPPO2024(control_t *control, const float *state_array) {
+	void networkEvaluate(control_t *control, const float *state_array) {
 	
-		for (int i = 0; i < structure[0][1]; i++) {
-			output_0[i] = 0;
-			for (int j = 0; j < structure[0][0]; j++) {
-				output_0[i] += state_array[j] * layer_0_weight[j][i];
-			}
-			output_0[i] += layer_0_bias[i];
-			output_0[i] = tanhf(output_0[i]);
-		}
-	
-		for (int i = 0; i < structure[1][1]; i++) {
-			output_1[i] = 0;
-			for (int j = 0; j < structure[1][0]; j++) {
-				output_1[i] += output_0[j] * layer_1_weight[j][i];
-			}
-			output_1[i] += layer_1_bias[i];
-			output_1[i] = tanhf(output_1[i]);
-		}
+	    for (int i = 0; i < structure[0][0]; i++) {
+	    	output_0[i] = 0;
+	    	for (int j = 0; j < structure[0][1]; j++) {
+	    		output_0[i] += state_array[j] * layer_0_weight[i][j];
+	    	}
+	    	output_0[i] += layer_0_bias[i];
+	    	output_0[i] = elu(output_0[i]);
+	    }
+    
+	    for (int i = 0; i < structure[1][0]; i++) {
+	    	output_1[i] = 0;
+	    	for (int j = 0; j < structure[1][1]; j++) {
+	    		output_1[i] += output_0[j] * layer_1_weight[i][j];
+	    	}
+	    	output_1[i] += layer_1_bias[i];
+	    	output_1[i] = elu(output_1[i]);
+	    }
+    
+	    for (int i = 0; i < structure[2][0]; i++) {
+	    	output_2[i] = 0;
+	    	for (int j = 0; j < structure[2][1]; j++) {
+	    		output_2[i] += output_1[j] * layer_2_weight[i][j];
+	    	}
+	    	output_2[i] += layer_2_bias[i];
+	    	output_2[i] = tanhf(output_2[i]);
+	    }
 		
-		for (int i = 0; i < structure[2][1]; i++) {
-			output_2[i] = 0;
-			for (int j = 0; j < structure[2][0]; j++) {
-				output_2[i] += output_1[j] * layer_2_weight[j][i];
-			}
-			output_2[i] += layer_2_bias[i];
-		}
-
-        control->nn_output[0] = output_2[0];
-        control->nn_output[1] = output_2[1];
-        control->nn_output[2] = output_2[2];
-        control->nn_output[3] = output_2[3];
-
-		// convert actions to pwms first
-        float pwm1 = 30000.0f + clipHJPPO2024(output_2[0], -1.0f, 1.0f) * 30000.0f;
-        float pwm2 = 30000.0f + clipHJPPO2024(output_2[1], -1.0f, 1.0f) * 30000.0f;
-        float pwm3 = 30000.0f + clipHJPPO2024(output_2[2], -1.0f, 1.0f) * 30000.0f;
-        float pwm4 = 30000.0f + clipHJPPO2024(output_2[3], -1.0f, 1.0f) * 30000.0f;
-
-        // convert pwms to thrust norms
-        float tn1 = pwm1 / 60000.0f;
-        float tn2 = pwm2 / 60000.0f;
-        float tn3 = pwm3 / 60000.0f;
-        float tn4 = pwm4 / 60000.0f;
-
-        control->normalizedForces[0] = max_thrust * clipHJPPO2024(tn1, 0.0f, 1.0f);
-        control->normalizedForces[1] = max_thrust * clipHJPPO2024(tn2, 0.0f, 1.0f);
-        control->normalizedForces[2] = max_thrust * clipHJPPO2024(tn3, 0.0f, 1.0f);
-        control->normalizedForces[3] = max_thrust * clipHJPPO2024(tn4, 0.0f, 1.0f);
+		// control->normalizedForces[0] = clip(scale(output_2[0]), 0.0, 1.0);
+		// control->normalizedForces[1] = clip(scale(output_2[1]), 0.0, 1.0);
+		// control->normalizedForces[2] = clip(scale(output_2[2]), 0.0, 1.0);
+		// control->normalizedForces[3] = clip(scale(output_2[3]), 0.0, 1.0);
+        float f1 = output_2[0] - 0.5f * output_2[1] + 0.5f * output_2[2] + output_2[3];
+	    float f2 = output_2[0] - 0.5f * output_2[1] - 0.5f * output_2[2] - output_2[3];
+	    float f3 = output_2[0] + 0.5f * output_2[1] - 0.5f * output_2[2] + output_2[3];
+	    float f4 = output_2[0] + 0.5f * output_2[1] + 0.5f * output_2[2] - output_2[3];
+    
 	}
+
+    PARAM_GROUP_START(nnForward)
+    PARAM_ADD(PARAM_FLOAT, hover_ratio, &hover_ratio)
+    PARAM_ADD(PARAM_FLOAT, ctrl_range, &ctrl_range)
+    PARAM_GROUP_STOP(nnForward)
+
+
+    LOG_GROUP_START(ctrlNN)
+
+    LOG_ADD(LOG_FLOAT, output1, &output_2[0])
+    LOG_ADD(LOG_FLOAT, output2, &output_2[1])
+    LOG_ADD(LOG_FLOAT, output3, &output_2[2])
+    LOG_ADD(LOG_FLOAT, output4, &output_2[3])
+    LOG_GROUP_STOP(ctrlNN)
+	
